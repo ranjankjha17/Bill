@@ -1,9 +1,10 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Alert, StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { login } from '../reducers/login';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Login = () => {
     const dispatch = useDispatch()
@@ -12,6 +13,18 @@ export const Login = () => {
         username: '',
         password: '',
     });
+    const getName = async () => {
+        const username = await AsyncStorage.getItem('auth')
+        return username
+    }
+    useEffect(() => {
+        const username=getName()
+        if(username){
+        navigation.navigate('Home');
+        }
+
+    }, [])
+
     const handleChange = (field, value) => {
         setFormData({
             ...formData,

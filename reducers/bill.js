@@ -4,6 +4,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const initialState = {
   bill: [],  
+  bags: 0,
 };
 
 const studentSlice = createSlice({
@@ -14,20 +15,24 @@ const studentSlice = createSlice({
       state.bill.push(action.payload);
       AsyncStorage.setItem('bill', JSON.stringify(state.bill));
     },
-    // deleteStudent: (state, action) => {     
-    //   state.students = state.students.filter(student => student.rowid !== action.payload);
-    //   AsyncStorage.setItem('students', JSON.stringify(state.students));
-    // },
     loadBill: (state, action) => {
       state.bill = action.payload;
     },
     resetBill: state => {
       state.bill = [];
     },
-  
+    initializeBags: (state, action) => {
+      state.bags = action.payload;
+    },
+    increaseBag: (state) => {
+      state.bags += 1;
+    },
+    decreaseBag: (state) => {
+      state.bags -= 1;
+    },  
   },
 });
 
-export const { addBill,  loadBill,resetBill } = studentSlice.actions;
+export const { addBill,  loadBill,resetBill,increaseBag,decreaseBag } = studentSlice.actions;
 
 export default studentSlice.reducer;

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { TouchableOpacity } from 'react-native';
-import { StyleSheet, Text, View, ScrollView, TextInput} from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { addStudent, resetStudents } from '../reducers/temp_order';
 import uuid from 'react-native-uuid';
@@ -14,11 +14,14 @@ export const PartyForm = (props) => {
   //const { username } = props  
   const username = useSelector(state => state.auth.username)
   const bill = useSelector(state => state.bill.bill);
+  let bags = parseInt(bill[0]?.bags || 0);
+  //  console.log(bags)
   const students = useSelector(state => state.tempOrder.students);
   const dispatch = useDispatch()
   const uuidValue = uuid.v4();
   const rowId = parseInt(uuidValue.substring(0, 4), 16);
   const quantityInputRef = useRef(null);
+  const [totalBags, setTotalbags] = useState(bags)
   const [partyformData, setpartyFormData] = useState({
     partyname: '',
     rate: '',
@@ -47,6 +50,13 @@ export const PartyForm = (props) => {
   useEffect(() => {
     loadStoredBill();
   }, []);
+  useEffect(() => {
+    console.log('Updated totalBags:', totalBags);
+
+    // Update totalBags when bags changes
+    setTotalbags(bags);
+  }, [bags]);
+
 
   useEffect(() => {
     setpartyFormData((prevData) => ({
@@ -58,25 +68,36 @@ export const PartyForm = (props) => {
   }, [partyformData.partyname]);
 
   const handleSubmit = () => {
-    if (partyformData.partyname && partyformData.rate && partyformData.quantity) {
-      partyformData['rowid'] = rowId
-      partyformData['agrnumber'] = bill[0] ? bill[0].agrnumber : ''
-      partyformData['serialnumber'] = bill[0] ? bill[0].serialnumber : ''
-      if (!partyformData.agrnumber) {
-        alert('Please input the AGR Number.');
-        return; // Exit the function if AGR number is blank
+
+    if (totalBags > 0) {
+      console.log(parseInt(bill[0]?.bags))
+      if (partyformData.partyname && partyformData.rate && partyformData.quantity) {
+        partyformData['rowid'] = rowId
+        partyformData['agrnumber'] = bill[0] ? bill[0].agrnumber : ''
+        partyformData['serialnumber'] = bill[0] ? bill[0].serialnumber : ''
+        if (!partyformData.agrnumber) {
+          alert('Please input the AGR Number.');
+          return; // Exit the function if AGR number is blank
+        }
+
+        dispatch(addStudent(partyformData));
+        setpartyFormData(prevData => ({
+          ...prevData,
+          quantity: ''
+        }));
+        quantityInputRef.current.focus();
+
+        alert('your data is sent to list')
+        setTotalbags((prevTotalBags) => {
+          const newTotalBags = prevTotalBags - 1;
+          console.log('New totalBags:', newTotalBags);
+          return newTotalBags;
+        });
+      } else {
+        alert("Please fill all the field")
       }
-
-      dispatch(addStudent(partyformData));
-      setpartyFormData(prevData => ({
-        ...prevData,
-        quantity: ''
-      }));
-      quantityInputRef.current.focus();
-
-      alert('your data is sent to list')
     } else {
-      alert("Please fill all the field")
+      alert("Total Bags are zero")
     }
   }
   const handleSaveData = async () => {
@@ -145,7 +166,7 @@ export const PartyForm = (props) => {
 
     // Add current date and time in the first line
     htmlContent += `
-    <div style="display: flex; justify-content: space-between;font-size:10px;">
+    <div style="display: flex; justify-content: space-between;font-size:48px;">
       <div style="display: flex; justify-content: space-between;"><p>Date</p> <p>${formattedDate}</p></div>
       <div style="display: flex; justify-content: space-between;"><p>Time</p> <p>${formattedTime}</p></div>
     </div>
@@ -153,7 +174,7 @@ export const PartyForm = (props) => {
 
     // Add agrnumber, farmername, and totalbags
     htmlContent += `
-    <div style="font-size:10px;">
+    <div style="font-size:48px;">
          <div style="display: flex; justify-content: space-between;"><p>AGR Number</p> <p>${data[0].agrnumber}</p></div>
          <div style="display: flex; justify-content: space-between;"><p>Farmer Name</p> <p>${data[0].farmername}</p></div>
          <div style="display: flex; justify-content: space-between;"><p>Total Bags</p> <p>${data[0].totalbags}</p></div>
@@ -166,23 +187,23 @@ export const PartyForm = (props) => {
     // Use forEach instead of map, and append to htmlContent directly
     organizedData.forEach((entry, index) => {
       htmlContent += `
-      <div style="margin-bottom: 2px;font-size:10px;border-bottom: 1px solid black;">
+      <div style="margin-bottom: 2px;font-size:48px;border-bottom: 1px solid black;">
       <div style="display: flex; justify-content: space-between;"><p>Party Name :</p> <p>${entry.partyname}</p></div>
       <div style="display: flex; justify-content: space-between;"><p>Rate :</p> <p>${entry.rate}</p></div>
       <div style="display: flex; flex-wrap: wrap;">
       <p style="margin-right: 1px;">Quantity:</p>
       ${entry.quantity.map((qty, index) => (
-        `<p style="margin-left: 22px;">${qty}</p>${(index + 1) % 4 === 0 ? '<br />' : ''}`
+        `<p style="margin-left: 70px;">${qty}</p>${(index + 1) % 4 === 0 ? '<br />' : ''}`
 
       )).join('')}
     </div>
-          <div style="display: flex; justify-content: space-between;font-size:10px;"><p>Total :</p> <p>${entry.totalquantity}</p></div>
+          <div style="display: flex; justify-content: space-between;font-size:48px;"><p>Total :</p> <p>${entry.totalquantity}</p></div>
       </div>`;
     });
 
     // Add remaining quantity
     htmlContent += `
-    <div style="font-size:10px;">
+    <div style="font-size:48px;">
     <div style="display: flex; justify-content: space-between;"><p>Total</p> <p>${totalQuantitySum}</p></div>
       <div style="display: flex; justify-content: space-between;"><p>Remaining Quantity</p> <p>${remainingQuantity}</p></div>
     </div>
@@ -197,9 +218,9 @@ export const PartyForm = (props) => {
       if (bill[0]?.agrnumber) {
         const printBillData = await getPrintBill(bill[0]?.agrnumber)
         const htmlContent = generateHTMLContent(printBillData);
-       // console.log('Generated HTML:', htmlContent);
-       await Print.printAsync({ html: htmlContent });
-  
+        // console.log('Generated HTML:', htmlContent);
+        await Print.printAsync({ html: htmlContent });
+
       } else {
         alert("Please, Input AGRNumber")
       }
@@ -213,6 +234,10 @@ export const PartyForm = (props) => {
     <View>
       <ScrollView contentContainerStyle={PartyFormStyles.container}>
         {/* <Text style={PartyFormStyles.heading}>Party Form</Text> */}
+        <View style={PartyFormStyles.codeContainer}>
+          <Text style={{ flex: 1, fontWeight: "500", color: "red" }}>Total Bags : {totalBags}</Text>
+        </View>
+
         <TextInput
           style={PartyFormStyles.input}
           placeholder="Party Name"
@@ -260,6 +285,14 @@ const PartyFormStyles = StyleSheet.create({
     paddingTop: 10,
 
   },
+  codeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 10,
+  },
+
   input: {
     height: 40,
     borderColor: 'gray',
