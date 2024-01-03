@@ -33,6 +33,6 @@ const studentSlice = createSlice({
   },
 });
 
-export const { addBill,  loadBill,resetBill,increaseBag,decreaseBag } = studentSlice.actions;
+export const { addBill,  loadBill,resetBill,increaseBag,decreaseBag,initializeBags } = studentSlice.actions;
 
 export default studentSlice.reducer;

@@ -6,7 +6,7 @@ import { addStudent, resetStudents } from '../reducers/temp_order';
 import uuid from 'react-native-uuid';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { loadBill } from '../reducers/bill';
+import { initializeBags, loadBill } from '../reducers/bill';
 import { getPrintBill } from './services/PrintService';
 import * as Print from 'expo-print';
 
@@ -14,14 +14,18 @@ export const PartyForm = (props) => {
   //const { username } = props  
   const username = useSelector(state => state.auth.username)
   const bill = useSelector(state => state.bill.bill);
-  let bags = parseInt(bill[0]?.bags || 0);
+  const totalBags=useSelector(state=>state.bill.bags)
+  console.log(totalBags)
+  const initialBagsCount = parseInt(bill[0]?.bags || 0);
+ //let bags = parseInt(bill[0]?.bags || 0);
   //  console.log(bags)
+  // let bags=useSelector()
   const students = useSelector(state => state.tempOrder.students);
   const dispatch = useDispatch()
   const uuidValue = uuid.v4();
   const rowId = parseInt(uuidValue.substring(0, 4), 16);
   const quantityInputRef = useRef(null);
-  const [totalBags, setTotalbags] = useState(bags)
+  //const [totalBags, setTotalbags] = useState(bags)
   const [partyformData, setpartyFormData] = useState({
     partyname: '',
     rate: '',
@@ -50,12 +54,18 @@ export const PartyForm = (props) => {
   useEffect(() => {
     loadStoredBill();
   }, []);
-  useEffect(() => {
-    console.log('Updated totalBags:', totalBags);
+  // useEffect(() => {
+  //   console.log('Updated totalBags:', totalBags);
 
-    // Update totalBags when bags changes
-    setTotalbags(bags);
-  }, [bags]);
+  //   // Update totalBags when bags changes
+  //   setTotalbags(bags);
+  // }, [bags]);
+  useEffect(() => {
+    // Assuming you have the initial bags count (e.g., 5)
+
+    // Dispatch the initializeBags action with the initial count
+    dispatch(initializeBags(initialBagsCount));
+  }, [dispatch]);
 
 
   useEffect(() => {
