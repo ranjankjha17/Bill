@@ -6,26 +6,19 @@ import { addStudent, resetStudents } from '../reducers/temp_order';
 import uuid from 'react-native-uuid';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { initializeBags, loadBill } from '../reducers/bill';
+import { decreaseBag, initializeBags, loadBill } from '../reducers/bill';
 import { getPrintBill } from './services/PrintService';
 import * as Print from 'expo-print';
 
 export const PartyForm = (props) => {
-  //const { username } = props  
   const username = useSelector(state => state.auth.username)
   const bill = useSelector(state => state.bill.bill);
   const totalBags=useSelector(state=>state.bill.bags)
-  console.log(totalBags)
-  const initialBagsCount = parseInt(bill[0]?.bags || 0);
- //let bags = parseInt(bill[0]?.bags || 0);
-  //  console.log(bags)
-  // let bags=useSelector()
   const students = useSelector(state => state.tempOrder.students);
   const dispatch = useDispatch()
   const uuidValue = uuid.v4();
   const rowId = parseInt(uuidValue.substring(0, 4), 16);
   const quantityInputRef = useRef(null);
-  //const [totalBags, setTotalbags] = useState(bags)
   const [partyformData, setpartyFormData] = useState({
     partyname: '',
     rate: '',
@@ -54,20 +47,6 @@ export const PartyForm = (props) => {
   useEffect(() => {
     loadStoredBill();
   }, []);
-  // useEffect(() => {
-  //   console.log('Updated totalBags:', totalBags);
-
-  //   // Update totalBags when bags changes
-  //   setTotalbags(bags);
-  // }, [bags]);
-  useEffect(() => {
-    // Assuming you have the initial bags count (e.g., 5)
-
-    // Dispatch the initializeBags action with the initial count
-    dispatch(initializeBags(initialBagsCount));
-  }, [dispatch]);
-
-
   useEffect(() => {
     setpartyFormData((prevData) => ({
       ...prevData,
@@ -78,7 +57,6 @@ export const PartyForm = (props) => {
   }, [partyformData.partyname]);
 
   const handleSubmit = () => {
-
     if (totalBags > 0) {
       console.log(parseInt(bill[0]?.bags))
       if (partyformData.partyname && partyformData.rate && partyformData.quantity) {
@@ -98,11 +76,7 @@ export const PartyForm = (props) => {
         quantityInputRef.current.focus();
 
         alert('your data is sent to list')
-        setTotalbags((prevTotalBags) => {
-          const newTotalBags = prevTotalBags - 1;
-          console.log('New totalBags:', newTotalBags);
-          return newTotalBags;
-        });
+        dispatch(decreaseBag())
       } else {
         alert("Please fill all the field")
       }

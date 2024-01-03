@@ -22,7 +22,6 @@ export const Login = () => {
         if(username){
         navigation.navigate('Home');
         }
-
     }, [])
 
     const handleChange = (field, value) => {

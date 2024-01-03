@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteStudent, loadStudents } from '../reducers/temp_order';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { increaseBag } from '../reducers/bill';
 
 export const PartyFormList = () => {
   const students = useSelector(state => state.tempOrder.students);
@@ -22,6 +23,7 @@ export const PartyFormList = () => {
   }, []);
   const handleDeleteStudent = rowId => {
     dispatch(deleteStudent(rowId));
+    dispatch(increaseBag())
   };
 
   return (

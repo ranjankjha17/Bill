@@ -30,9 +30,13 @@ const studentSlice = createSlice({
     decreaseBag: (state) => {
       state.bags -= 1;
     },  
+    resetBags: state => {
+      state.bags = 0;
+    },
+
   },
 });
 
-export const { addBill,  loadBill,resetBill,increaseBag,decreaseBag,initializeBags } = studentSlice.actions;
+export const { addBill,  loadBill,resetBill,increaseBag,decreaseBag,initializeBags,resetBags } = studentSlice.actions;
 
 export default studentSlice.reducer;

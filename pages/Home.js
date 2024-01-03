@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { addBill, loadBill, resetBill } from '../reducers/bill';
+import { addBill, initializeBags, loadBill, resetBags, resetBill } from '../reducers/bill';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { resetStudents } from '../reducers/temp_order';
@@ -88,7 +88,9 @@ export const Home = (props) => {
                     //     bags: '',
                     //     agrnumber: ''
                     // });
+                    dispatch(initializeBags(formData.bags));
                     alert("Your form data is saved")
+
                 }
             } catch (error) {
                 console.log(error.response.data.message)
@@ -121,6 +123,7 @@ export const Home = (props) => {
             await AsyncStorage.removeItem('bill');
             dispatch(resetBill())
             dispatch(resetStudents())
+            dispatch(resetBags())
             setFormData({
                 farmername: '',
                 bags: '',

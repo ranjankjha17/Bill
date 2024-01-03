@@ -1,25 +1,24 @@
 import React, { useEffect } from 'react'
-import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import { PartyFormList } from '../components/PartyFormList';
-import { PartyForm } from '../components/PartyForm';
-import { Home } from './Home';
+import { ScrollView, StyleSheet} from 'react-native'
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../reducers/login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
-import { resetBill } from '../reducers/bill';
-import { resetStudents } from '../reducers/temp_order';
 import { AdminDashboard } from './AdminDashboard';
 import { Main } from './Main';
-import { Logout } from '../components/Logout';
 
 export const Dashboard = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch()
   const username = useSelector(state => state.auth.username)
-
-  useEffect(() => {
-  }, [username])
+  const getName = async () => {
+    const username = await AsyncStorage.getItem('auth')
+    return username
+}
+useEffect(() => {
+    const username=getName()
+    if(!username){    
+      navigation.navigate('Login');
+    }
+}, [username])
   return (
     <ScrollView style={{ backgroundColor: "#fff" }}>
       {
