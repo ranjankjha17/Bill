@@ -56,6 +56,12 @@ export const PartyForm = (props) => {
     }));
   }, [partyformData.partyname]);
 
+  const handleKeyPress = (event) => {
+    if (event.key === 'Enter') {
+      handleSubmit();
+    }
+  };
+
   const handleSubmit = () => {
     if (totalBags > 0) {
       console.log(parseInt(bill[0]?.bags))
@@ -240,6 +246,7 @@ export const PartyForm = (props) => {
           placeholder="Quantity"
           onChangeText={(text) => handleChange('quantity', text)}
           value={partyformData.quantity}
+          onKeyPress={handleKeyPress}
         />
         <View style={PartyFormStyles.buttonContainer}>
           <TouchableOpacity style={PartyFormStyles.button} onPress={handleSubmit}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,6 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { resetStudents } from '../reducers/temp_order';
 
 export const Home = (props) => {
+    const inputRef = useRef(null);
     //const { username } = props
     const username=useSelector(state=>state.auth.username)
     const navigation = useNavigation();
@@ -70,6 +71,13 @@ export const Home = (props) => {
             [field]: value,
         });
     };
+    const handleKeyPress = (event) => {
+        if (event.key === 'Enter') {
+          //handleSubmit();
+          alert("Hi enter")
+        }
+      };
+    
     const handleSubmit = async () => {
         if (formData.agrnumber && formData.farmername && formData.bags) {
             const headers = {
@@ -171,6 +179,8 @@ export const Home = (props) => {
                     placeholder="Bags"
                     onChangeText={(text) => handleChange('bags', text)}
                     value={formData.bags}
+                    ref={inputRef}
+                    onKeyPress={handleKeyPress}
                 />
                 <View style={HomeStyles.buttonContainer}>
                     <TouchableOpacity style={HomeStyles.button} onPress={handleSubmit}>
