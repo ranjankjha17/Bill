@@ -9,16 +9,19 @@ import { Main } from './Main';
 export const Dashboard = () => {
   const navigation = useNavigation();
   const username = useSelector(state => state.auth.username)
-  const getName = async () => {
-    const username = await AsyncStorage.getItem('auth')
-    return username
-}
+//   const getName = async () => {
+//     const username = await AsyncStorage.getItem('auth')
+//     return username
+// }
+// useEffect(() => {
+//     const username=getName()
+//     if(!username){    
+//       navigation.navigate('Login');
+//     }
+// }, [username])
 useEffect(() => {
-    const username=getName()
-    if(!username){    
-      navigation.navigate('Login');
-    }
 }, [username])
+
   return (
     <ScrollView style={{ backgroundColor: "#fff" }}>
       {

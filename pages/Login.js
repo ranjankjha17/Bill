@@ -13,16 +13,16 @@ export const Login = () => {
         username: '',
         password: '',
     });
-    const getName = async () => {
-        const username = await AsyncStorage.getItem('auth')
-        return username
-    }
-    useEffect(() => {
-        const username=getName()
-        if(username){
-        navigation.navigate('Home');
-        }
-    }, [])
+    // const getName = async () => {
+    //     const username = await AsyncStorage.getItem('auth')
+    //     return username
+    // }
+    // useEffect(() => {
+    //     const username=getName()
+    //     if(username){
+    //     navigation.navigate('Home');
+    //     }
+    // }, [])
 
     const handleChange = (field, value) => {
         setFormData({
