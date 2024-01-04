@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { TouchableOpacity } from 'react-native';
+import { Platform, TouchableOpacity } from 'react-native';
 import { StyleSheet, Text, View, ScrollView, TextInput } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { addStudent, resetStudents } from '../reducers/temp_order';
@@ -13,12 +13,13 @@ import * as Print from 'expo-print';
 export const PartyForm = (props) => {
   const username = useSelector(state => state.auth.username)
   const bill = useSelector(state => state.bill.bill);
-  const totalBags=useSelector(state=>state.bill.bags)
+  const totalBags = useSelector(state => state.bill.bags)
   const students = useSelector(state => state.tempOrder.students);
   const dispatch = useDispatch()
   const uuidValue = uuid.v4();
   const rowId = parseInt(uuidValue.substring(0, 4), 16);
   const quantityInputRef = useRef(null);
+  //const inputRef = useRef(null);
   const [partyformData, setpartyFormData] = useState({
     partyname: '',
     rate: '',
@@ -59,9 +60,11 @@ export const PartyForm = (props) => {
   const handleKeyPress = (event) => {
     if (event.key === 'Enter') {
       handleSubmit();
+      // requestAnimationFrame(() => {
+      //   quantityInputRef.current.focus();
+      // });
     }
   };
-
   const handleSubmit = () => {
     if (totalBags > 0) {
       console.log(parseInt(bill[0]?.bags))
@@ -156,7 +159,7 @@ export const PartyForm = (props) => {
 
     // Add current date and time in the first line
     htmlContent += `
-    <div style="display: flex; justify-content: space-between;font-size:48px;">
+    <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;">
       <div style="display: flex; justify-content: space-between;"><p>Date</p> <p>${formattedDate}</p></div>
       <div style="display: flex; justify-content: space-between;"><p>Time</p> <p>${formattedTime}</p></div>
     </div>
@@ -165,9 +168,9 @@ export const PartyForm = (props) => {
     // Add agrnumber, farmername, and totalbags
     htmlContent += `
     <div style="font-size:48px;">
-         <div style="display: flex; justify-content: space-between;"><p>AGR Number</p> <p>${data[0].agrnumber}</p></div>
-         <div style="display: flex; justify-content: space-between;"><p>Farmer Name</p> <p>${data[0].farmername}</p></div>
-         <div style="display: flex; justify-content: space-between;"><p>Total Bags</p> <p>${data[0].totalbags}</p></div>
+         <div style="display: flex; justify-content: space-between;line-height: 0;"><p>AGR Number</p> <p>${data[0].agrnumber}</p></div>
+         <div style="display: flex; justify-content: space-between;line-height: 0;"><p>Farmer Name</p> <p>${data[0].farmername}</p></div>
+         <div style="display: flex; justify-content: space-between;line-height: 0;"><p>Total Bags</p> <p>${data[0].totalbags}</p></div>
          <div style="border-bottom: 1px solid black;"></div>
          <div style="border-bottom: 1px solid black;"></div>
 
@@ -178,24 +181,26 @@ export const PartyForm = (props) => {
     organizedData.forEach((entry, index) => {
       htmlContent += `
       <div style="margin-bottom: 2px;font-size:48px;border-bottom: 1px solid black;">
-      <div style="display: flex; justify-content: space-between;"><p>Party Name :</p> <p>${entry.partyname}</p></div>
-      <div style="display: flex; justify-content: space-between;"><p>Rate :</p> <p>${entry.rate}</p></div>
-      <div style="display: flex; flex-wrap: wrap;">
+      <div style="display: flex; justify-content: space-between;line-height: 0;"><p>Party Name :</p> <p>${entry.partyname}</p></div>
+      <div style="display: flex; justify-content: space-between;line-height: 0;"><p>Rate :</p> <p>${entry.rate}</p></div>
+      <div style="display: flex; flex-wrap: wrap;line-height: 0;">
       <p style="margin-right: 1px;">Quantity:</p>
       ${entry.quantity.map((qty, index) => (
         `<p style="margin-left: 70px;">${qty}</p>${(index + 1) % 4 === 0 ? '<br />' : ''}`
 
       )).join('')}
     </div>
-          <div style="display: flex; justify-content: space-between;font-size:48px;"><p>Total :</p> <p>${entry.totalquantity}</p></div>
+          <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;"><p>Total :</p> <p>${entry.totalquantity}</p></div>
+          <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;"><p>Bags :</p> <p>${entry.quantity.length}</p></div>
+
       </div>`;
     });
 
     // Add remaining quantity
     htmlContent += `
     <div style="font-size:48px;">
-    <div style="display: flex; justify-content: space-between;"><p>Total</p> <p>${totalQuantitySum}</p></div>
-      <div style="display: flex; justify-content: space-between;"><p>Remaining Quantity</p> <p>${remainingQuantity}</p></div>
+    <div style="display: flex; justify-content: space-between;line-height: 0;"><p>Total</p> <p>${totalQuantitySum}</p></div>
+      <div style="display: flex; justify-content: space-between;line-height: 0;"><p>Remaining Quantity</p> <p>${remainingQuantity}</p></div>
     </div>
   `;
 
@@ -246,6 +251,15 @@ export const PartyForm = (props) => {
           placeholder="Quantity"
           onChangeText={(text) => handleChange('quantity', text)}
           value={partyformData.quantity}
+          // ref={inputRef}
+          onSubmitEditing={() => {
+            handleSubmit(); // For Android
+          }}
+          onBlur={() => {
+            if (Platform.OS === 'ios') {
+              handleSubmit(); // For iOS
+            }
+          }}
           onKeyPress={handleKeyPress}
         />
         <View style={PartyFormStyles.buttonContainer}>

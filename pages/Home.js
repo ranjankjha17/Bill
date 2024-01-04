@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native';
 import { resetStudents } from '../reducers/temp_order';
 
 export const Home = (props) => {
-    const inputRef = useRef(null);
+   // const inputRef = useRef(null);
     //const { username } = props
     const username=useSelector(state=>state.auth.username)
     const navigation = useNavigation();
@@ -73,12 +73,12 @@ export const Home = (props) => {
     };
     const handleKeyPress = (event) => {
         if (event.key === 'Enter') {
-          //handleSubmit();
-          alert("Hi enter")
+          handleSubmit();
         }
       };
     
     const handleSubmit = async () => {
+       // alert("Hi enter")
         if (formData.agrnumber && formData.farmername && formData.bags) {
             const headers = {
                 Accept: 'application/json',
@@ -179,7 +179,8 @@ export const Home = (props) => {
                     placeholder="Bags"
                     onChangeText={(text) => handleChange('bags', text)}
                     value={formData.bags}
-                    ref={inputRef}
+                  //  ref={inputRef}
+                    onSubmitEditing={handleSubmit}
                     onKeyPress={handleKeyPress}
                 />
                 <View style={HomeStyles.buttonContainer}>
