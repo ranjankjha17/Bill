@@ -90,7 +90,7 @@ export const PartyForm = (props) => {
         alert("Please fill all the field")
       }
     } else {
-      alert("Total Bags are zero")
+      alert("Remaining Bags are zero")
     }
   }
   const handleSaveData = async () => {
@@ -190,8 +190,10 @@ export const PartyForm = (props) => {
 
       )).join('')}
     </div>
-          <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;"><p>Total :</p> <p>${entry.totalquantity}</p></div>
-          <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;"><p>Bags :</p> <p>${entry.quantity.length}</p></div>
+          <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;"><p>Net Quantity :</p> <p>${entry.totalquantity}</p></div>
+          <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;"><p>${(entry.quantity.length)} Bags :</p> <p>${(entry.quantity.length)*2}</p></div>
+          <div style="border-bottom: 1px solid black;"></div>
+          <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;"><p>Total :</p> <p>${(entry.totalquantity)-(entry.quantity.length)*2}</p></div>
 
       </div>`;
     });
@@ -199,7 +201,7 @@ export const PartyForm = (props) => {
     // Add remaining quantity
     htmlContent += `
     <div style="font-size:48px;">
-    <div style="display: flex; justify-content: space-between;line-height: 0;"><p>Total</p> <p>${totalQuantitySum}</p></div>
+    <div style="display: flex; justify-content: space-between;line-height: 0;"><p>Net Total</p> <p>${totalQuantitySum}</p></div>
       <div style="display: flex; justify-content: space-between;line-height: 0;"><p>Remaining Quantity</p> <p>${remainingQuantity}</p></div>
     </div>
   `;
@@ -230,9 +232,8 @@ export const PartyForm = (props) => {
       <ScrollView contentContainerStyle={PartyFormStyles.container}>
         {/* <Text style={PartyFormStyles.heading}>Party Form</Text> */}
         <View style={PartyFormStyles.codeContainer}>
-          <Text style={{ flex: 1, fontWeight: "500", color: "red" }}>Total Bags : {totalBags}</Text>
+          <Text style={{ flex: 1, fontWeight: "500", color: "red" }}>Remaining Bags : {totalBags}</Text>
         </View>
-
         <TextInput
           style={PartyFormStyles.input}
           placeholder="Party Name"
