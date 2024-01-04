@@ -108,11 +108,18 @@ export const PartyForm = (props) => {
         if (success) {
           dispatch(resetStudents())
           AsyncStorage.removeItem('students');
-          setpartyFormData({
+          // setpartyFormData({
+          //   partyname: '',
+          //   rate: '',
+          //   quantity: ''
+          // });
+          setpartyFormData(prevData => ({
+            ...prevData,
             partyname: '',
             rate: '',
             quantity: ''
-          });
+          }));
+  
           alert("Your form data is saved")
         }
       } catch (error) {
