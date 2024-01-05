@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Platform, TouchableOpacity } from 'react-native';
-import { StyleSheet, Text, View, ScrollView, TextInput } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, TextInput, Keyboard } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { addStudent, resetStudents } from '../reducers/temp_order';
 import uuid from 'react-native-uuid';
@@ -18,8 +18,7 @@ export const PartyForm = (props) => {
   const dispatch = useDispatch()
   const uuidValue = uuid.v4();
   const rowId = parseInt(uuidValue.substring(0, 4), 16);
-  const quantityInputRef = useRef(null);
-  //const inputRef = useRef(null);
+  const inputRef = useRef(null);
   const [partyformData, setpartyFormData] = useState({
     partyname: '',
     rate: '',
@@ -57,15 +56,8 @@ export const PartyForm = (props) => {
     }));
   }, [partyformData.partyname]);
 
-  const handleKeyPress = (event) => {
-    if (event.key === 'Enter') {
-      handleSubmit();
-      // requestAnimationFrame(() => {
-      //   quantityInputRef.current.focus();
-      // });
-    }
-  };
   const handleSubmit = () => {
+    Keyboard.dismiss();
     if (totalBags > 0) {
       console.log(parseInt(bill[0]?.bags))
       if (partyformData.partyname && partyformData.rate && partyformData.quantity) {
@@ -82,9 +74,10 @@ export const PartyForm = (props) => {
           ...prevData,
           quantity: ''
         }));
-        quantityInputRef.current.focus();
 
         alert('your data is sent to list')
+        inputRef.current.focus();
+
         dispatch(decreaseBag())
       } else {
         alert("Please fill all the field")
@@ -108,18 +101,13 @@ export const PartyForm = (props) => {
         if (success) {
           dispatch(resetStudents())
           AsyncStorage.removeItem('students');
-          // setpartyFormData({
-          //   partyname: '',
-          //   rate: '',
-          //   quantity: ''
-          // });
           setpartyFormData(prevData => ({
             ...prevData,
             partyname: '',
             rate: '',
             quantity: ''
           }));
-  
+
           alert("Your form data is saved")
         }
       } catch (error) {
@@ -198,9 +186,9 @@ export const PartyForm = (props) => {
       )).join('')}
     </div>
           <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;"><p>Net Quantity :</p> <p>${entry.totalquantity}</p></div>
-          <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;"><p>${(entry.quantity.length)} Bags :</p> <p>${(entry.quantity.length)*2}</p></div>
+          <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;"><p>${(entry.quantity.length)} Bags :</p> <p>${(entry.quantity.length) * 2}</p></div>
           <div style="border-bottom: 1px solid black;"></div>
-          <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;"><p>Total :</p> <p>${(entry.totalquantity)-(entry.quantity.length)*2}</p></div>
+          <div style="display: flex; justify-content: space-between;font-size:48px;line-height: 0;"><p>Total :</p> <p>${(entry.totalquantity) - (entry.quantity.length) * 2}</p></div>
 
       </div>`;
     });
@@ -228,12 +216,10 @@ export const PartyForm = (props) => {
       } else {
         alert("Please, Input AGRNumber")
       }
-
     } catch (error) {
       console.log('Error printing:', error.response.data.message);
     }
   };
-
   return (
     <View>
       <ScrollView contentContainerStyle={PartyFormStyles.container}>
@@ -255,11 +241,10 @@ export const PartyForm = (props) => {
         />
         <TextInput
           style={PartyFormStyles.input}
-          ref={quantityInputRef}
           placeholder="Quantity"
           onChangeText={(text) => handleChange('quantity', text)}
           value={partyformData.quantity}
-          // ref={inputRef}
+          ref={inputRef}
           onSubmitEditing={() => {
             handleSubmit(); // For Android
           }}
@@ -268,7 +253,6 @@ export const PartyForm = (props) => {
               handleSubmit(); // For iOS
             }
           }}
-          onKeyPress={handleKeyPress}
         />
         <View style={PartyFormStyles.buttonContainer}>
           <TouchableOpacity style={PartyFormStyles.button} onPress={handleSubmit}>

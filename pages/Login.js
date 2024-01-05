@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Alert, StyleSheet, Text, View, ScrollView, TextInput, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
@@ -7,6 +7,7 @@ import { login } from '../reducers/login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const Login = () => {
+  //  const inputRef=useRef()
     const dispatch = useDispatch()
     const navigation = useNavigation();
     const [formData, setFormData] = useState({
@@ -30,7 +31,11 @@ export const Login = () => {
             [field]: value,
         });
     };
+
+
     const handleSubmit = async () => {
+        //alert("hi login")
+        //inputRef.current.focus()
         if (formData.username && formData.password) {
             try {
                 const headers = {
@@ -60,9 +65,16 @@ export const Login = () => {
             alert("Please Fill UserName and Password")
         }
     }
+
+    // const handleKeyPress = (e) => {
+    //     if (e.key === 'Enter') {
+    //         handleSubmit()
+    //     }
+    // }
     return (
         <ScrollView contentContainerStyle={LoginStyles.container}>
             <TextInput
+               // ref={inputRef}
                 style={LoginStyles.input}
                 placeholder="UserName"
                 onChangeText={(text) => handleChange('username', text)}
@@ -74,6 +86,11 @@ export const Login = () => {
                 secureTextEntry={true}
                 onChangeText={(text) => handleChange('password', text)}
                 value={formData.password}
+                // onKeyPress={handleKeyPress}
+                onSubmitEditing={() => {
+                    handleSubmit(); // For Android
+                }}
+
             />
             <View style={LoginStyles.buttonContainer}>
                 <TouchableOpacity style={LoginStyles.button} onPress={handleSubmit}>
