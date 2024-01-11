@@ -120,7 +120,7 @@ export const PartyForm = (props) => {
     }
   }
 
-  const generateHTMLContent = (data) => {
+  const generateHTMLContent = (data,agrnumber) => {
     // Initialize htmlContent outside the loop
     let htmlContent = '';
     const organizedData = data.reduce((acc, entry) => {
@@ -163,7 +163,7 @@ export const PartyForm = (props) => {
     // Add agrnumber, farmername, and totalbags
     htmlContent += `
     <div style="font-size:48px;">
-         <div style="display: flex; justify-content: space-between;line-height: 0;"><p>AGR Number</p> <p>${data[0].agrnumber}</p></div>
+         <div style="display: flex; justify-content: space-between;line-height: 0;"><p>AGR Number</p> <p>${agrnumber}</p></div>
          <div style="display: flex; justify-content: space-between;line-height: 0;"><p>Farmer Name</p> <p>${data[0].farmername}</p></div>
          <div style="display: flex; justify-content: space-between;line-height: 0;"><p>Total Bags</p> <p>${data[0].totalbags}</p></div>
          <div style="border-bottom: 1px solid black;"></div>
@@ -207,9 +207,11 @@ export const PartyForm = (props) => {
 
   const handlePrint = async () => {
     try {
-      if (bill[0]?.agrnumber) {
-        const printBillData = await getPrintBill(bill[0]?.agrnumber)
-        const htmlContent = generateHTMLContent(printBillData);
+      if (bill[0]?.serialnumber && bill[0]?.agrnumber) {
+        const agrnumber=bill[0]?.agrnumber
+        const printBillData = await getPrintBill(bill[0]?.serialnumber)
+       // console.log(printBillData)
+        const htmlContent = generateHTMLContent(printBillData,agrnumber);
         // console.log('Generated HTML:', htmlContent);
         await Print.printAsync({ html: htmlContent });
 
